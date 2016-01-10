@@ -137,7 +137,7 @@ To enter, go to terminal and in the root of your rails app type
 
 (This is IRB with your rails app loaded in.)
 
-Inside of your Rails console, create a new User object.
+Inside of your Rails console, instantiate a new User object. Note that the new object does not yet have an `id`. Why is this?
 
 `irb(main):001:0> albert = User.new`
 
@@ -152,13 +152,17 @@ Save your user to the database.
 
 `irb(main):003:0> albert.save`
 
-Retrieve all of the users in the database and store then im a users variable.
+***Why doesn't `User.new` save the object to the database?***
+
+Retrieve all of the users in the database and store then in a users variable.
 
 `irb(main):004:0> users = User.all`
 
 Exit the console.
 
 `exit`
+
+**YOU DO:** Add a new `User` to the database using the Rails console.
 
 
 
@@ -176,6 +180,12 @@ Exit the console.
 `rails g migration AddAgeToUsers age:integer`
 
 - This will create a migration file in our `RAILS_ROOT/db/migrate` folder. The purpose of this file is to describe what actions we want to take to move our DB schema from its current state to the new state, and also, what would need to happen to move the migration back to the old state again (should we need to).
+
+
+
+*How does Rails keep track of the order of our migrations and when they were created?*
+> Note the timestamp in the filename. Also, the files are run from top to bottom (oldest to most recent).
+
 - available column types:
 
 ```ruby
@@ -201,7 +211,12 @@ We can check that the migration ran successfully.
 
 `rake db:migrate:status`
 
+<br>
+## Schema.rb
 
+When migrations run, Rails also updates the `schema.rb` file - it contains the migration commands combined into each table.
+
+The schema is the snapshot of your current database tables and fields.
 
 <br>
 
@@ -219,6 +234,8 @@ user = User.create(first_name: "Abraham", last_name: "Maslow")
 User.all
 ```
 * Note that `create` combines the `new` and `save` actions.
+
+***Why do we need two actions to persist an object to the database?***
 
 
 #### Update
@@ -263,7 +280,7 @@ User.last 							#=> finds last user
 
 **YOU DO:**
 
-- Add 2 new users to your database via new/save and 2 via create.
+Add 2 new users to your database via new/save and 2 via create.
 
 <br>
 
@@ -271,9 +288,7 @@ User.last 							#=> finds last user
 
 ## Let's add another column to our Users table via Migration
 
-So far, we dropped and recreated our tables when we wanted to add columns to them. But this is not a practical, real-world solution. So we use migrations to do this in Rails.
-
-Rails gives us some help to generate migration files - we can list the fields and their types in the generate command, and if we name the migration appropriately, Rails even guesses the name of the table:
+As we saw earlier, Rails gives us some help to generate migration files - we can list the fields and their types in the generate command, and if we name the migration appropriately, Rails even guesses the name of the table:
 
 
 **WE DO:**
@@ -293,17 +308,10 @@ rake db:migrate
 
 **YOU DO:**
 
-- Add a new column to your `Users` table using a migration (`fav_food`, `nickname`, `pet`). Add the new attribute to each of your Users.
+Add a new column to your `Users` table using a migration (`fav_food`, `nickname`, `pet`). Add the new attribute to each of your Users.
 
 <br>
 
-## Schema.rb
-
-When migrations run, Rails also updates the `schema.rb` file - it contains the migration commands combined into each table.
-
-The schema is the snapshot of your current database tables and fields.
-
-<br>
 
 ## Rollbacks
 
@@ -321,6 +329,8 @@ We can undo the previous migration with:
 
 - Run `rake db:migrate` to get back to the current version of your schema. This command will run all the migrations on the migration folder.
 
+**Why not just delete the migration file directly?**
+
 
 <br>
 
@@ -332,6 +342,28 @@ We can use the same naming convention as create to automatically generate the mi
 ```ruby
 rails g migration RemoveAgeFromUsers age:integer
 ```
+
+<br>
+
+## Rename a column
+
+Create the migratioin file:
+
+```ruby
+rails g migration ChangeColumnName
+```
+
+Update the file like so:
+
+
+```ruby
+# rename_column :table_name, :old_name, :new_name
+def change
+  rename_column :users, :hometown, :pet
+end
+```
+
+Run `rake db:migrate`
 
 <br>
 
@@ -356,8 +388,14 @@ class User < ActiveRecord::Base
   validates :first_name, presence: true
 end
 
-User.create  # => false
-User.create! # => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
+user = User.new(last_name: "Wright")
+user.valid?  # => checks validations and returns a boolean
+user.save	 # => rollback db
+user.save!	 # => specifies failure
+
+user.first_name = "Marc"
+user.valid?
+user.save
 ```
 
 You can learn more about validations in the [Active Record Validations
@@ -383,7 +421,7 @@ end
 
 **WE DO:**
 
-- Add the following validation to `user.rb`:
+Add the following validation to `user.rb`:
 
 ```ruby
 validates :hometown, :first_name, :last_name, length: { minimum: 3, too_short: "must have at least %{count} words" }
@@ -395,11 +433,11 @@ or add `numericality` to the name fields:
 validates :age, numericality: true
 ```
 
-- Try to create a user and make it fail. Then make it pass.
-
 **YOU DO:**
 
-- Create a new table column you and add a validation.
+- Create a new `User` table column and add a validation. 
+- Attempt to create a new `User` and make it fail. 
+- Make the new `User` pass.
 
 
 <br>
