@@ -18,7 +18,7 @@ By the end of today you should be able to...
 
 ### Active Record
 
-Active Record is the M in [MVC](getting_started.html#the-mvc-architecture) - the
+Active Record is the M in MVC - the
 model - which is the layer of the system responsible for representing business
 data and logic. Active Record facilitates the creation and use of business
 objects whose data requires persistent storage to a database. It is an
