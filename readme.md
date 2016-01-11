@@ -399,7 +399,7 @@ user.save
 ```
 
 You can learn more about validations in the [Active Record Validations
-guide](active_record_validations.html).
+guide](http://guides.rubyonrails.org/active_record_validations.html).
 
 ####Validate User Model
 
