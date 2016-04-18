@@ -442,8 +442,8 @@ validates :age, numericality: true
 
 <br>
 
-##Exercise
-[Here](https://github.com/ATL-WDI-Exercises/rails-active-record-migrations)
+##Migrations/Validations Exercise
+[Can be found here](https://github.com/ATL-WDI-Exercises/rails-active-record-migrations)
 
 ##Further Reading
 
