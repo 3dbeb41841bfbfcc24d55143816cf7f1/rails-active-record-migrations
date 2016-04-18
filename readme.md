@@ -442,6 +442,9 @@ validates :age, numericality: true
 
 <br>
 
+##Exercise
+[Here](https://github.com/ATL-WDI-Exercises/rails-active-record-migrations)
+
 ##Further Reading
 
 * [Active Record Overview](http://guides.rubyonrails.org/active_record_basics.html)
